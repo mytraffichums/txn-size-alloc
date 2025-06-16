@@ -50,9 +50,12 @@ function App() {
           <p>Total Gas Used: {metrics.totalGasUsed.toString()} gas ({metrics.blockGasUsagePercent.toFixed(2)}%)</p>
           <p>Number of Transactions: {blockDetails.transactions.length}</p>
           
-          <h3>Transactions</h3>
+          <h3>Top 10 Transactions by Gas Usage</h3>
           <div className="transactions">
-            {blockDetails.transactions.map((tx: any, index: number) => {
+            {[...blockDetails.transactions]
+              .sort((a, b) => Number(b.gas - a.gas))
+              .slice(0, 10)
+              .map((tx: any, index: number) => {
               const gasPercentage = Number((tx.gas * 100n) / metrics.gasLimit)
               return (
                 <div key={tx.hash} className="transaction">
