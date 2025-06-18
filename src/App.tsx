@@ -27,7 +27,7 @@ function App() {
       onBlock: (block) => {
         if (block.transactions) {
           const newEmojis: FireEmoji[] = block.transactions.map((tx: any) => {
-            // Calculate MON burned (gas * gasPrice converted to MON)
+            // Calculate MON burned (gas * gasPrice converted to MON) 
             const gasUsed = tx.gas || 0n
             const gasPrice = tx.gasPrice || 0n
             const monBurnedWei = gasUsed * gasPrice
