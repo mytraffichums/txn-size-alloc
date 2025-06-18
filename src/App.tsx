@@ -35,9 +35,9 @@ function App() {
             const monBurnedNum = parseFloat(monBurned)
 
             // Calculate size based on MON burned (logarithmic scale for better distribution)
-            // Min size: 10px, Max size: 400px (GIGANTIC difference!)
-            const minSize = 10
-            const maxSize = 400
+            // Min size: 8px, Max size: 100px
+            const minSize = 8
+            const maxSize = 100
             const logScale = Math.log10(Math.max(monBurnedNum * 1000000, 1)) // Scale up small values
             const normalizedScale = Math.min(logScale / 8, 1) // Normalize to 0-1 range
             const size = minSize + (maxSize - minSize) * normalizedScale
@@ -61,6 +61,8 @@ function App() {
     return () => unwatch()
   }, [])
 
+
+
   return (
     <div className="blank-page">
       <div className="header">
@@ -71,6 +73,31 @@ function App() {
             Each fire emoji represents a transaction burning MON tokens.<br/>
             <strong>Size = Amount of MON burned</strong> | Click any emoji to view on explorer
           </p>
+        </div>
+      </div>
+
+      <div className="history-box">
+        <h3>🔥 Transaction History</h3>
+        <div className="history-list">
+          {fireEmojis.length === 0 ? (
+            <p className="no-transactions">Waiting for transactions...</p>
+          ) : (
+            fireEmojis.map((emoji) => (
+              <div 
+                key={emoji.id} 
+                className="history-item"
+                onClick={() => window.open(`https://testnet.monadexplorer.com/tx/${emoji.id}`, '_blank')}
+              >
+                <div className="tx-info">
+                  <span className="tx-hash">{emoji.id.slice(0, 10)}...{emoji.id.slice(-6)}</span>
+                </div>
+                <div className="tx-burn">
+                  <span className="mon-burned">{emoji.monBurned} MON</span>
+                  <span className="fire-size" style={{ fontSize: `${Math.min(emoji.size / 20, 20)}px` }}>🔥</span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -132,6 +159,98 @@ function App() {
         
         .info-box strong {
           color: #ff6b35;
+        }
+
+        .history-box {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          width: 350px;
+          max-height: 500px;
+          background: rgba(0,0,0,0.7);
+          border: 2px solid #ff6b35;
+          border-radius: 10px;
+          padding: 15px;
+          z-index: 1000;
+          backdrop-filter: blur(10px);
+          color: white;
+        }
+
+        .history-box h3 {
+          color: #ff6b35;
+          margin: 0 0 15px 0;
+          font-size: 1.2rem;
+          text-align: center;
+        }
+
+        .history-list {
+          max-height: 400px;
+          overflow-y: auto;
+          scrollbar-width: thin;
+          scrollbar-color: #ff6b35 transparent;
+        }
+
+        .history-list::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .history-list::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        .history-list::-webkit-scrollbar-thumb {
+          background: #ff6b35;
+          border-radius: 3px;
+        }
+
+        .history-item {
+          padding: 8px 12px;
+          margin-bottom: 8px;
+          background: rgba(255,107,53,0.1);
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+          background: rgba(255,107,53,0.2);
+          transform: translateX(5px);
+        }
+
+        .tx-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 4px;
+        }
+
+        .tx-hash {
+          font-family: monospace;
+          font-size: 0.85rem;
+          color: #ff6b35;
+        }
+
+        .tx-burn {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .mon-burned {
+          font-size: 0.9rem;
+          color: white;
+          font-weight: bold;
+        }
+
+        .fire-size {
+          margin-left: 8px;
+        }
+
+        .no-transactions {
+          text-align: center;
+          color: #ccc;
+          font-style: italic;
+          padding: 20px 0;
         }
         
         .fire-emoji {
